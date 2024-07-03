@@ -5,21 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
-use App\Models\Administrateur;
-use App\Http\Requests\RegisterAdministrateurRequest;
 use Illuminate\Http\JsonResponse;
-
+use App\Http\Requests\RegisterAdministrateurRequest;
+use App\Models\Administrateur;
+use App\DTO\Auth\RegisterDTO;
+use App\DTO\Auth\LoginDTO;
 
 class AuthController extends Controller
 {
     // Inscription d'un nouvel administrateur
     public function register(RegisterAdministrateurRequest $request) : JsonResponse
     {
+        $data = new RegisterDTO($request->all());
         // Création de l'administrateur
         $admin = Administrateur::create([
-            'nom' => $request->nom,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'nom' => $data->nom,
+            'email' => $data->email,
+            'password' => Hash::make($data->password),
         ]);
         
         return response()->json($admin, 201);
@@ -28,11 +30,12 @@ class AuthController extends Controller
     // Connexion d'un administrateur
     public function login(Request $request) : JsonResponse
     {
+        $data = new LoginDTO($request->all());
         // Recherche de l'administrateur par email
-        $admin = Administrateur::where('email', $request->email)->first();
+        $admin = Administrateur::where('email', $data->email)->first();
 
         // Vérification du mot de passe
-        if (!$admin || !Hash::check($request->password, $admin->password)) {
+        if (!$admin || !Hash::check($data->password, $admin->password)) {
             throw ValidationException::withMessages([
                 'email' => ['Les informations d\'identification fournies sont incorrectes.'],
             ]);

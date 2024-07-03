@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\JsonResponse;
 use App\Http\Requests\StoreProfilRequest;
 use App\Http\Requests\UpdateProfilRequest;
 use App\Models\Profil;
-use Illuminate\Http\JsonResponse;
-
+use App\DTO\Profile\CreateProfileDto;
+use App\DTO\Profile\UpdateProfileDto;
 
 class ProfilController extends Controller
 {
@@ -25,16 +26,17 @@ class ProfilController extends Controller
     // Créer un nouveau profil
     public function store(StoreProfilRequest $request) : JsonResponse
     {
+        $data = new CreateProfileDto($request->all());
 
         // Gestion de l'image
         $imagePath = $request->file('image')->store('images', 'public');
 
         // Création du profil
         $profile = Profil::create([
-            'prenom' => $request->prenom,
-            'nom' => $request->nom,
+            'prenom' => $data->prenom,
+            'nom' => $data->nom,
             'image' => $imagePath,
-            'statut' => $request->statut,
+            'statut' => $data->statut,
         ]);
 
         // Retourner la réponse JSON avec les informations du nouveau profil
@@ -50,11 +52,12 @@ class ProfilController extends Controller
      */
     public function update(UpdateProfilRequest $request, int $id) : JsonResponse
     {
+        $data = new UpdateProfileDto($request->all());
         // Trouver le profil par son ID
         $profile = Profil::findOrFail($id);
 
         // Mise à jour des autres champs
-        $profile->update($request->only('prenom', 'nom', 'statut'));
+        $profile->update($data->only('prenom', 'nom', 'statut'));
 
         // Retourner la réponse JSON avec les informations mises à jour du profil
         return response()->json($profile);
@@ -63,6 +66,7 @@ class ProfilController extends Controller
     // Mettre à jour un profil existant avec image
     public function updateWithPost(UpdateProfilRequest $request, int $id) : JsonResponse
     {
+        $data = new UpdateProfileDto($request->all());
         // Trouver le profil par son ID
         $profile = Profil::findOrFail($id);
 
@@ -77,7 +81,7 @@ class ProfilController extends Controller
         }
 
         // Mise à jour des autres champs
-        $profile->update($request->only('nom', 'prenom', 'statut'));
+        $profile->update($data->only('nom', 'prenom', 'statut'));
 
         // Retourner la réponse JSON avec les informations mises à jour du profil
         return response()->json($profile);
