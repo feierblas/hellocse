@@ -6,7 +6,7 @@ Pour l'authentification, j'ai utilisé [Sanctum](https://laravel.com/docs/11.x/s
 
 Sanctum gère lui-même les réponses, donc il est nécessaire de préciser que l'on souhaite du JSON en retour.
 
-Pour cela, il faut ajouter en en-tête : `"Accept": "application/json"`. Cette précision est importante lors du test des erreurs. En cas de requête réussie,
+Pour cela, il faut ajouter en en-tête : `"Accept": "application/json"`. 
 
 
 ## Problèmes liés à l'envoi d'images par PUT
