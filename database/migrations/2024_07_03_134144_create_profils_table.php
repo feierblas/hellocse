@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('profils', function (Blueprint $table) {
             $table->id();
-            $table->string('prenom');
-            $table->string('nom');
+            $table->string('prenom', 50);
+            $table->string('nom', 50);
             $table->string('image');
             $table->enum('statut', ['inactif', 'en attente', 'actif']);
             $table->timestamps();
