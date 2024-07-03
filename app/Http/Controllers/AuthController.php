@@ -7,11 +7,13 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Models\Administrateur;
 use App\Http\Requests\RegisterAdministrateurRequest;
+use Illuminate\Http\JsonResponse;
+
 
 class AuthController extends Controller
 {
     // Inscription d'un nouvel administrateur
-    public function register(RegisterAdministrateurRequest $request)
+    public function register(RegisterAdministrateurRequest $request) : JsonResponse
     {
         // Création de l'administrateur
         $admin = Administrateur::create([
@@ -24,7 +26,7 @@ class AuthController extends Controller
     }
 
     // Connexion d'un administrateur
-    public function login(Request $request)
+    public function login(Request $request) : JsonResponse
     {
         // Recherche de l'administrateur par email
         $admin = Administrateur::where('email', $request->email)->first();
@@ -43,7 +45,7 @@ class AuthController extends Controller
     }
 
     // Déconnexion d'un administrateur
-    public function logout(Request $request)
+    public function logout(Request $request) : JsonResponse
     {
         // Suppression des tokens d'authentification de l'utilisateur connecté
         $request->user()->tokens()->delete();
